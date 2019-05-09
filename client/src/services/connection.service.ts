@@ -19,7 +19,7 @@ export class ConnectionService {
     this._api = Api.instance;
 
     this.getOrders = this._api.getOrders;
-    this.socket = this._api.socket;
+    this.socket = socket;
   }
 
   public readonly getOrders: any;

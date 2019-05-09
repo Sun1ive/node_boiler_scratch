@@ -2,13 +2,13 @@ import { IApiService } from '../interfaces/api.service.interface';
 
 export class Api implements IApiService {
   private static _instance: Api;
-  public readonly socket: SocketIOClient.Socket;
+  private readonly socket: SocketIOClient.Socket;
 
-  private constructor(socket: any) {
+  private constructor(socket: SocketIOClient.Socket) {
     this.socket = socket;
   }
 
-  public static create(socket: any): void {
+  public static create(socket: SocketIOClient.Socket): void {
     if (!this._instance) {
       this._instance = new this(socket);
     } else {
