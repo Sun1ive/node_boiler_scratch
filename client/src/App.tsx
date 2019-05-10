@@ -4,12 +4,7 @@ import { ConnectionService } from './services/connection.service';
 export const App = () => {
   useEffect(() => {
     const i = ConnectionService.instance;
-    i.socket.on('ordersChanged', (d: any) => {
-      console.log('ordersChanged %o', d);
-    });
-    i.getOrders()
-      .then(console.log)
-      .catch(console.log);
+    console.log(i);
     // i.socket.removeAllListeners();
     return () => {};
   }, []);

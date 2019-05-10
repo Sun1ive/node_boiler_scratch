@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    "target": "es2017",
+    "baseUrl": "./",
+    "module": "commonjs",
+    "lib": ["es5", "esnext", "dom"],
+    "declaration": false,
+    "outDir": "./distribution",
+    "removeComments": true,
+    "strict": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "noImplicitThis": true,
+    "alwaysStrict": true,
+    "noImplicitReturns": true,
+    "moduleResolution": "node",
+    "types": ["node", "socket.io", "express"],
+    "esModuleInterop": true,
+    "inlineSourceMap": true,
+    "experimentalDecorators": true,
+    "newLine": "LF"
+  },
+  "exclude": ["node_modules"]
+}
