@@ -1,5 +1,4 @@
-const { resolve, join } = require('path');
-const { cpus } = require('os');
+const { resolve } = require('path');
 
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const HTMLWebpackPlugin = require('html-webpack-plugin');
@@ -61,6 +60,14 @@ module.exports = {
     filename: 'js/[name].[hash:16].js'
   },
 
+  devServer: {
+    port: 8080,
+    overlay: true,
+    stats: 'errors-only'
+  },
+
+  bail: true,
+
   stats,
 
   resolve: {
@@ -84,7 +91,9 @@ module.exports = {
           {
             loader: 'css-loader'
           },
-          'postcss-loader'
+          {
+            loader: 'postcss-loader'
+          }
         ]
       },
       {
@@ -94,8 +103,10 @@ module.exports = {
           {
             loader: 'css-loader'
           },
-          'postcss-loader',
-          'sass-loader'
+          'sass-loader',
+          {
+            loader: 'postcss-loader'
+          }
         ]
       },
       {
