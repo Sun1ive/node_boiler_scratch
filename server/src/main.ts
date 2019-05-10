@@ -1,16 +1,47 @@
-import { NestFactory, NestApplication } from '@nestjs/core';
-import { AppModule } from './app.module';
-import { join } from 'path';
+import SocketIO from 'socket.io';
+import { config } from 'dotenv';
+import * as IO from 'socket.io-client';
+import { basename, resolve } from 'path';
+import 'source-map-support/register';
+import { ExpressServer } from './providers/express/server';
+import { Config } from './config/config';
+import { SwitchBoard } from './providers/switch.board/switch.board';
+import { ConnectionOptions } from './interfaces/config.interface';
+import { ClientEPExtension } from './extensions/client.ep.extension';
 
-async function bootstrap() {
-  const app = await NestFactory.create<NestApplication>(AppModule);
-  app.enableCors();
+const isProduction = process.env.NODE_ENV === 'production';
 
-  app.useStaticAssets(join(__dirname, '../../client/dist'), {
-    index: ['index.html'],
-    redirect: false,
-  });
+config({
+  path: isProduction ? resolve('.env.production') : resolve('.env.development')
+});
 
-  await app.listen(3000);
+function createClient(
+  serverOpt: ConnectionOptions,
+  socketOptions: SocketIO.ServerOptions
+): SocketIOClient.Socket {
+  return IO.connect(
+    `http://${serverOpt.HOST}:${serverOpt.PORT}/`,
+    socketOptions
+  );
 }
-bootstrap();
+
+(async () => {
+  console.log(`[${basename(__filename)}] Started`);
+  const config = Config.instance;
+  const server = ExpressServer.instance;
+  const { socketOptions, serverOptions } = config.getConfig();
+
+  const io = SocketIO(server.server, socketOptions);
+  const switchBoard = new SwitchBoard(io.of('/'));
+
+  ClientEPExtension.create(createClient(serverOptions, socketOptions));
+  const onStop = (signal: string) => {
+    console.log('Process exit by %s', signal);
+    switchBoard.stop();
+    ClientEPExtension.instance.stop();
+    server.stop();
+  };
+
+  process.on('SIGTERM', onStop);
+  process.on('SIGINT', onStop);
+})();

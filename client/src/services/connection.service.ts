@@ -1,44 +1,41 @@
 import { connect } from 'socket.io-client';
-import { Api } from '../../../shared/services/api.service';
+import { IOrderService } from '../../../server/shared/interfaces/order.service.interface';
+import { ClientProxyExtension } from '../../../server/shared/extension/client.proxy.extension';
 
 const isProd = process.env.NODE_ENV === 'production';
 
 export class ConnectionService {
-  private _api: Api;
-  private static _instance: ConnectionService;
+  private _extension: ClientProxyExtension;
+  private static _instance: ConnectionService | null;
+
+  public static get instance(): ConnectionService {
+    if (ConnectionService._instance) {
+      return ConnectionService._instance;
+    }
+    ConnectionService._instance = new ConnectionService();
+    return ConnectionService._instance;
+  }
+
+  public readonly orderService: IOrderService;
 
   private constructor() {
-    let socketHost: string;
+    ConnectionService._instance = null;
+    // const socketHost = process.env.REACT_APP_SOCKET || window.location.origin;
+    let socketHost = 'http://127.0.0.1:3000';
 
-    if (isProd) {
-      socketHost = window.location.origin;
-    } else {
-      socketHost = '127.0.0.1:3000';
-    }
+    // if (isProd) {
+    //   socketHost = window.location.origin;
+    // }
     console.log(`socketHost`, socketHost);
 
-    const socket = connect(
+    const io = connect(
       socketHost,
       { transports: ['websocket'] }
     );
+    ClientProxyExtension.create(io);
 
-    Api.create(socket);
-    this._api = Api.instance;
+    this._extension = ClientProxyExtension.instance;
 
-    this.getOrders = this._api.getOrders;
-    this.socket = socket;
-  }
-
-  public readonly getOrders: any;
-  public readonly socket: SocketIOClient.Socket;
-
-  public static get instance(): ConnectionService {
-    if (!this._instance) {
-      this._instance = new ConnectionService();
-
-      return this._instance;
-    }
-
-    return this._instance;
+    this.orderService = this._extension.orderService;
   }
 }
