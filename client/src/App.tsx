@@ -7,13 +7,20 @@ export const App = () => {
     i.socket.on('ordersChanged', (d: any) => {
       console.log('ordersChanged %o', d);
     });
-
     i.getOrders()
       .then(console.log)
       .catch(console.log);
-
     // i.socket.removeAllListeners();
+    return () => {};
   }, []);
 
-  return <div>Hello world</div>;
+  return (
+    <div className='container'>
+      <div>
+        <img src='/public/pchela.jpg' alt='' />
+        <img src='/public/photo.jpeg' alt='' />
+        <img src='/public/close.svg' alt='' />
+      </div>
+    </div>
+  );
 };

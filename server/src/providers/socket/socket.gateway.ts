@@ -6,7 +6,7 @@ import {
 import { NestGateway } from '@nestjs/websockets/interfaces/nest-gateway.interface';
 import { Server, Socket } from 'socket.io';
 
-@WebSocketGateway({ path: '/', transports: ['websocket'] })
+@WebSocketGateway({ transports: ['websocket'] })
 export class SocketGateway implements NestGateway {
   @WebSocketServer()
   server: Server;
@@ -21,14 +21,18 @@ export class SocketGateway implements NestGateway {
     client.emit('get_orders', { foo: 'bar' });
   }
 
-  afterInit() {}
-
-  handleConnection(client: Socket) {
-    console.log(client.id);
-    setInterval(() => {
-      client.emit('ordersChanged', { '1': 2 });
-    }, 3000);
+  afterInit() {
+    console.log('Socket gateway INIT Hook');
   }
 
-  handleDisconnect() {}
+  handleConnection(client: Socket) {
+    console.log('New client connected: %s', client.id);
+    setInterval(() => {
+      client.emit('ordersChanged', { 1: 2 });
+    }, 12000);
+  }
+
+  handleDisconnect(client: Socket) {
+    console.log('Client disconnected: %s', client.id);
+  }
 }

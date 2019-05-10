@@ -4,6 +4,10 @@ html {
   }
 }
 
+body {
+  display: flex;
+}
+
 #root {
   color: red;
 }

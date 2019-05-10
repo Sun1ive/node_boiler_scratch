@@ -4,6 +4,8 @@ const { cpus } = require('os');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const HTMLWebpackPlugin = require('html-webpack-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+const CopyPlugin = require('copy-webpack-plugin');
+const ImageminPlugin = require('imagemin-webpack-plugin').default;
 
 const outPath = resolve(__dirname, './dist');
 const sourcePath = resolve(__dirname, './src');
@@ -75,7 +77,6 @@ module.exports = {
         test: /\.tsx?$/,
         loader: 'awesome-typescript-loader'
       },
-
       {
         test: /\.css$/,
         use: [
@@ -86,7 +87,6 @@ module.exports = {
           'postcss-loader'
         ]
       },
-
       {
         test: /\.s(a|c)ss$/,
         use: [
@@ -98,31 +98,26 @@ module.exports = {
           'sass-loader'
         ]
       },
-
       {
-        test: /\.(a?png|svg|jpg|gif)$/,
+        test: /\.(gif|png|jpe?g|svg)$/i,
+        include: resolve(__dirname, 'public'),
+        use: [
+          'file-loader',
+          {
+            loader: 'image-webpack-loader',
+            options: {
+              bypassOnDebug: true,
+              disable: true
+            }
+          }
+        ]
+      },
+      {
+        test: /\.(mp4|webm|ogg|mp3|wav|flac|aac)(\?.*)?$/,
         loader: 'url-loader',
         include: resolve(__dirname, 'public'),
         options: {
-          limit: 10000,
-          name: 'img/[name].[hash:7].[ext]'
-        }
-      },
-
-      {
-        test: /\.(mp4|webm|ogg|mp3|wav|flac|aac)(\?.*)?$/,
-        loader: 'url-loader',
-        options: {
-          limit: 10000,
-          name: 'media/[name].[hash:7].[ext]'
-        }
-      },
-
-      {
-        test: /\.(mp4|webm|ogg|mp3|wav|flac|aac)(\?.*)?$/,
-        loader: 'url-loader',
-        options: {
-          limit: 10000,
+          limit: 8192,
           name: 'media/[name].[hash:7].[ext]'
         }
       }
@@ -141,6 +136,18 @@ module.exports = {
       filename: 'css/[name].[hash].css'
     }),
 
-    new OptimizeCSSAssetsPlugin()
+    new OptimizeCSSAssetsPlugin(),
+
+    new CopyPlugin([
+      {
+        from: resolve(__dirname, 'public'),
+        to: resolve(__dirname, 'dist/public'),
+        ignore: ['*.html']
+      }
+    ]),
+
+    new ImageminPlugin({
+      test: 'dist/public/**'
+    })
   ]
 };

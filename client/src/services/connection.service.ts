@@ -1,13 +1,20 @@
 import { connect } from 'socket.io-client';
 import { Api } from '../../../shared/services/api.service';
 
+const isProd = process.env.NODE_ENV === 'production';
+
 export class ConnectionService {
   private _api: Api;
   private static _instance: ConnectionService;
 
   private constructor() {
-    // const socketHost = process.env.REACT_APP_SOCKET || window.location.origin;
-    const socketHost = '127.0.0.1:3000';
+    let socketHost: string;
+
+    if (isProd) {
+      socketHost = window.location.origin;
+    } else {
+      socketHost = '127.0.0.1:3000';
+    }
     console.log(`socketHost`, socketHost);
 
     const socket = connect(
