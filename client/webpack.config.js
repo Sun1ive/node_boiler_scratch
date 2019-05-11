@@ -4,7 +4,6 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const HTMLWebpackPlugin = require('html-webpack-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
-const ImageminPlugin = require('imagemin-webpack-plugin').default;
 
 const outPath = resolve(__dirname, './dist');
 const sourcePath = resolve(__dirname, './src');
@@ -112,16 +111,11 @@ module.exports = {
       {
         test: /\.(gif|png|jpe?g|svg)$/i,
         include: resolve(__dirname, 'public'),
-        use: [
-          'file-loader',
-          {
-            loader: 'image-webpack-loader',
-            options: {
-              bypassOnDebug: true,
-              disable: true
-            }
-          }
-        ]
+        loader: 'file-loader',
+        options: {
+          limit: 8192,
+          name: 'img/[name].[hash:7].[ext]'
+        }
       },
       {
         test: /\.(mp4|webm|ogg|mp3|wav|flac|aac)(\?.*)?$/,
@@ -155,10 +149,6 @@ module.exports = {
         to: resolve(__dirname, 'dist/public'),
         ignore: ['*.html']
       }
-    ]),
-
-    new ImageminPlugin({
-      test: 'dist/public/**'
-    })
+    ])
   ]
 };
