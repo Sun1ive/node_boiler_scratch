@@ -4,9 +4,7 @@
     "quotemark": false,
     "trailing-comma": false,
     "semicolon": false,
-    "no-console": {
-      "severity": "warn"
-    },
+    "no-console": false,
     "arrow-parens": false,
     "no-empty-interface": false,
     "variable-name": false,

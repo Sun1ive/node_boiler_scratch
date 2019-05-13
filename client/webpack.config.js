@@ -5,6 +5,7 @@ const HTMLWebpackPlugin = require('html-webpack-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
+const Dotenv = require('dotenv-webpack');
 
 const outPath = resolve(__dirname, './dist');
 const sourcePath = resolve(__dirname, './src');
@@ -25,9 +26,7 @@ const HTMLWebpackPluginConfig = new HTMLWebpackPlugin({
   meta: {
     title: package.name,
     description: package.description,
-    keywords: Array.isArray(package.keywords)
-      ? package.keywords.join(',')
-      : undefined
+    keywords: Array.isArray(package.keywords) ? package.keywords.join(',') : undefined
   }
 });
 
@@ -98,12 +97,7 @@ module.exports = {
       },
       {
         test: /\.(sa|sc|c)ss$/,
-        use: [
-          !isProd ? 'style-loader' : MiniCssExtractPlugin.loader,
-          'css-loader',
-          'sass-loader',
-          'postcss-loader'
-        ]
+        use: [!isProd ? 'style-loader' : MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader', 'postcss-loader']
       },
       {
         test: /\.(gif|png|jpe?g|svg)$/i,
@@ -143,6 +137,11 @@ module.exports = {
     : {},
 
   plugins: [
+    new Dotenv({
+      path: isProd ? './.env.production' : './.env.development',
+      safe: true
+    }),
+
     HTMLWebpackPluginConfig,
 
     new MiniCssExtractPlugin({

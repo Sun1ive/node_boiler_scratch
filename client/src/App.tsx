@@ -5,16 +5,15 @@ export const App = () => {
   useEffect(() => {
     const i = ConnectionService.instance;
     console.log(i);
-    // i.socket.removeAllListeners();
-    return () => {};
+    console.log(process.env.HOST);
   }, []);
 
   return (
-    <div className='container'>
+    <div className="container">
       <div>
-        <img src='/public/pchela.jpg' alt='' />
-        <img src='/public/photo.jpeg' alt='' />
-        <img src='/public/close.svg' alt='' />
+        <img src="/public/pchela.jpg" alt="" />
+        <img src="/public/photo.jpeg" alt="" />
+        <img src="/public/close.svg" alt="" />
       </div>
     </div>
   );

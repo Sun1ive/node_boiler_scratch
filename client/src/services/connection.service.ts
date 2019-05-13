@@ -20,12 +20,11 @@ export class ConnectionService {
 
   private constructor() {
     ConnectionService._instance = null;
-    // const socketHost = process.env.REACT_APP_SOCKET || window.location.origin;
-    let socketHost = 'http://127.0.0.1:3000';
+    let socketHost: string = process.env.SOCKET_HOST || '127.0.0.1:3000';
 
-    // if (isProd) {
-    //   socketHost = window.location.origin;
-    // }
+    if (isProd) {
+      socketHost = process.env.SOCKET_HOST || window.location.origin;
+    }
     console.log(`socketHost`, socketHost);
 
     const io = connect(
