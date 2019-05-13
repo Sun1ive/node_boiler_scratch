@@ -49,7 +49,7 @@
   "lint-staged": {
     "*.{ts}": [
       "tslint --fix",
-      "npm run prettier",
+      "prettier --write src/**/*",
       "git add"
     ]
   }
