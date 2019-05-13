@@ -4,6 +4,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const HTMLWebpackPlugin = require('html-webpack-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
 
 const outPath = resolve(__dirname, './dist');
 const sourcePath = resolve(__dirname, './src');
@@ -96,16 +97,12 @@ module.exports = {
         ]
       },
       {
-        test: /\.s(a|c)ss$/,
+        test: /\.(sa|sc|c)ss$/,
         use: [
           !isProd ? 'style-loader' : MiniCssExtractPlugin.loader,
-          {
-            loader: 'css-loader'
-          },
-          'sass-loader',
-          {
-            loader: 'postcss-loader'
-          }
+          'css-loader',
+          'postcss-loader',
+          'sass-loader'
         ]
       },
       {
@@ -113,8 +110,8 @@ module.exports = {
         include: resolve(__dirname, 'public'),
         loader: 'file-loader',
         options: {
-          limit: 8192,
-          name: 'img/[name].[hash:7].[ext]'
+          name: '[name].[hash:7].[ext]',
+          outputPath: 'public/'
         }
       },
       {
@@ -133,6 +130,17 @@ module.exports = {
     maxEntrypointSize: 300000,
     hints: isProd ? 'warning' : false
   },
+
+  optimization: isProd
+    ? {
+        minimizer: [
+          new TerserPlugin({
+            cache: true,
+            parallel: true
+          })
+        ]
+      }
+    : {},
 
   plugins: [
     HTMLWebpackPluginConfig,
