@@ -7,7 +7,8 @@
     "dev": "nodemon",
     "start": "node distribution/src/main.js",
     "build": "rimraf distribution && tsc",
-    "electron": "electron ./distribution/src/providers/electron/electron.js"
+    "electron": "electron ./distribution/src/providers/electron/electron.js",
+    "prettier": "prettier --write src/**/*"
   },
   "keywords": [],
   "author": "",
@@ -31,9 +32,25 @@
     "@types/socket.io": "^2.1.2",
     "@types/socket.io-client": "^1.4.32",
     "@types/uuid": "^3.4.4",
+    "husky": "^2.2.0",
+    "lint-staged": "^8.1.6",
     "nodemon": "^1.19.0",
+    "prettier": "^1.17.0",
     "ts-node-dev": "^1.0.0-pre.35",
     "tsconfig-paths": "^3.8.0",
+    "tslint": "^5.16.0",
     "typescript": "^3.4.5"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{ts}": [
+      "tslint --fix",
+      "npm run prettier",
+      "git add"
+    ]
   }
 }
