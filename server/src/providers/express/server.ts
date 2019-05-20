@@ -19,7 +19,7 @@ export class ExpressServer {
     app.use(express.json());
     app.use(express.urlencoded({ extended: true }));
     app.use(compression());
-    app.use(express.static(join(__dirname, '../../../../client/build')));
+    app.use(express.static(join(__dirname, '../../../../client/dist')));
     this._app = app;
     this._server = createServer(app);
     this._server.listen(PORT, HOST, () => {

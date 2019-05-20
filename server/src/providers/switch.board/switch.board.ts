@@ -1,6 +1,8 @@
+/* tslint:disable */
+
 import { EventEmitter } from 'events';
 import * as IO from 'socket.io';
-import { XRPC } from '../../../shared/schemas/x-rpc.schema';
+import { XRPC } from '@shared/schemas/x-rpc.schema';
 import { basename } from 'path';
 
 export class SwitchBoard extends EventEmitter {
@@ -21,10 +23,7 @@ export class SwitchBoard extends EventEmitter {
     socket.on('service_attach', (service: string) => {
       const oldSocket = this._attached.get(service);
       if (oldSocket && oldSocket !== socket.id) {
-        this.emit(
-          'error',
-          new Error(`Service ${service} is already attached to ${oldSocket}`)
-        );
+        this.emit('error', new Error(`Service ${service} is already attached to ${oldSocket}`));
       } else {
         console.log('Attach: %s => %s', service, socket.id);
         this._attached.set(service, socket.id);
@@ -36,10 +35,7 @@ export class SwitchBoard extends EventEmitter {
       if (oldSocket === undefined) {
         this.emit('error', new Error(`Service ${service} is not attached`));
       } else if (oldSocket !== socket.id) {
-        this.emit(
-          'error',
-          new Error(`Service ${service} is not attached to ${socket.id}`)
-        );
+        this.emit('error', new Error(`Service ${service} is not attached to ${socket.id}`));
       } else {
         this._attached.delete(service);
         this._subscribed.delete(service);
@@ -50,10 +46,7 @@ export class SwitchBoard extends EventEmitter {
     socket.on('service_event', (payload: XRPC.Event) => {
       const socketId = this._attached.get(payload.service!);
       if (socketId !== socket.id) {
-        this.emit(
-          'error',
-          new Error(`Service ${payload.service} is not owned by ${socket.id}`)
-        );
+        this.emit('error', new Error(`Service ${payload.service} is not owned by ${socket.id}`));
         return;
       }
       const subs = this._subscribed.get(payload.service!);
@@ -61,13 +54,7 @@ export class SwitchBoard extends EventEmitter {
         for (const targetId of subs) {
           const target = this._server.connected[targetId];
           if (target) {
-            console.log(
-              'Event: %s::%s from %s to %s',
-              payload.service,
-              payload.name,
-              socket.id,
-              targetId
-            );
+            console.log('Event: %s::%s from %s to %s', payload.service, payload.name, socket.id, targetId);
             target.emit('service_event', payload);
           }
         }
@@ -78,13 +65,7 @@ export class SwitchBoard extends EventEmitter {
       const target = this._server.connected[targetId!];
       if (targetId && target) {
         this._requests.set(payload.id, socket.id);
-        console.log(
-          'Request: %s::%s from %s to %s',
-          payload.service,
-          payload.method,
-          socket.id,
-          targetId
-        );
+        console.log('Request: %s::%s from %s to %s', payload.service, payload.method, socket.id, targetId);
         target.emit('service_request', payload);
       }
     });
@@ -103,12 +84,7 @@ export class SwitchBoard extends EventEmitter {
       if (targetId && target) {
         if (!subs) {
           this._subscribed.set(service, (subs = new Set()));
-          console.log(
-            'Subscribe: %s from %s to %s',
-            service,
-            socket.id,
-            targetId
-          );
+          console.log('Subscribe: %s from %s to %s', service, socket.id, targetId);
           target.emit('service_subscribe', service);
         }
         subs.add(socket.id);
@@ -122,12 +98,7 @@ export class SwitchBoard extends EventEmitter {
         subs.delete(socket.id);
         if (subs.size === 0) {
           this._subscribed.delete(service);
-          console.log(
-            'Unsubscribe: %s from %s to %s',
-            service,
-            socket.id,
-            targetId
-          );
+          console.log('Unsubscribe: %s from %s to %s', service, socket.id, targetId);
           target.emit('service_unsubscribe', service);
         }
       }
@@ -159,33 +130,21 @@ export class SwitchBoard extends EventEmitter {
     }
   };
 
-  private readonly _addSocketListener = (
-    event: string,
-    callback: (...args: any[]) => void
-  ): void => {
+  private readonly _addSocketListener = (event: string, callback: (...args: any[]) => void): void => {
     this._server.on(event, callback);
     this._listeners.push({ event, callback });
   };
 
-  private readonly _removeSocketListener = (
-    event: string,
-    callback?: (...args: any[]) => void
-  ): void => {
+  private readonly _removeSocketListener = (event: string, callback?: (...args: any[]) => void): void => {
     if (callback) {
-      const index = this._listeners.findIndex(
-        element => element.event === event && element.callback === callback
-      );
+      const index = this._listeners.findIndex(element => element.event === event && element.callback === callback);
       if (index >= 0) {
         this._server.removeListener(event, callback);
         this._listeners.splice(index, 1);
       }
     } else {
       let index: number;
-      while (
-        (index = this._listeners.findIndex(
-          element => element.event === event
-        )) >= 0
-      ) {
+      while ((index = this._listeners.findIndex(element => element.event === event)) >= 0) {
         const { event, callback } = this._listeners[index];
         this._server.removeListener(event, callback);
         this._listeners.splice(index, 1);

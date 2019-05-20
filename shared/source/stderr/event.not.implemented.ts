@@ -1,6 +1,6 @@
-import { XRPC } from '../schemas/x-rpc.schema';
 import { Exception } from './exception';
 import { ERROR_CODE } from './enum/error.code';
+import { XRPC } from '../schemas/x-rpc.schema';
 
 export interface IEventNotImplementedData extends XRPC.Params {
   service: string | null;

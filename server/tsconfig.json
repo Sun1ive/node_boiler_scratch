@@ -1,11 +1,13 @@
 {
   "compilerOptions": {
     "target": "es2017",
-    "baseUrl": "./",
+    "baseUrl": ".",
     "module": "commonjs",
     "lib": ["es5", "esnext", "dom"],
     "declaration": false,
-    "outDir": "./distribution",
+    "rootDir": "src",
+    "outDir": "distribution",
+    "allowJs": true,
     "removeComments": true,
     "strict": true,
     "noImplicitAny": true,
@@ -14,11 +16,19 @@
     "alwaysStrict": true,
     "noImplicitReturns": true,
     "moduleResolution": "node",
-    "types": ["node", "socket.io", "express"],
+    "types": ["express", "socket.io", "node"],
     "esModuleInterop": true,
     "inlineSourceMap": true,
     "experimentalDecorators": true,
-    "newLine": "LF"
+    "strictPropertyInitialization": false,
+    "newLine": "LF",
+    "paths": {
+        "@shared/*": [ "../shared/lib/*" ]
+    }
   },
-  "exclude": ["node_modules"]
+  "references": [
+    {
+        "path": "../shared"
+    }
+  ]
 }

@@ -1,7 +1,7 @@
 import { DeferredTask } from '../util/deferred';
-import { Common } from '../schemas/common.schema';
 import { Exception } from './exception';
 import { ERROR_CODE } from './enum/error.code';
+import { Common } from '../schemas/common.schema';
 
 export class TimeOutError extends Exception {
   public static defer(

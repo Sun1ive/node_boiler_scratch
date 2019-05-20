@@ -1,7 +1,8 @@
-import { ExtensionIo } from '../../shared/extension/base/extension.io';
-import { OrderEndPoint } from '../providers/endpoint/order.endpoint';
-import { IOrderService } from '../../shared/interfaces/order.service.interface';
 import { basename } from 'path';
+
+import { ExtensionIo } from '@shared/extension/base/extension.io';
+import { IOrderService } from '@shared/interfaces/order.service.interface';
+import { OrderEndPoint } from '../providers/endpoint/order.endpoint';
 
 export class ClientEPExtension extends ExtensionIo {
   private static _instance: ClientEPExtension | null = null;

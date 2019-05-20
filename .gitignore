@@ -1,4 +1,7 @@
-server/node_modules
-client/node_modules
-client/dist
 client/.env.development
+**/.idea
+**/node_modules
+**/lib
+**/dist
+**/distribution
+**/*.tsbuildinfo
