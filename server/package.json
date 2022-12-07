@@ -33,7 +33,7 @@
     "@types/socket.io-client": "^1.4.32",
     "@types/uuid": "^3.4.4",
     "husky": "^2.2.0",
-    "lint-staged": "^8.1.6",
+    "lint-staged": "^13.1.0",
     "nodemon": "^1.19.0",
     "prettier": "^1.17.0",
     "ts-node-dev": "^1.0.0-pre.35",
